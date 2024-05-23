@@ -20,8 +20,8 @@ MONGO_COLLECTION_NAME = os.getenv('MONGO_COLLECTION_NAME')
 
 client = AsyncIOMotorClient(MONGO_CONNECTION_STRING)
 db = client[MONGO_DB_NAME]
-fsm_collection = db['fsm']  # Adjusted to specifically reference the 'fsm' collection
-users_collection = db['users']  # Added explicit reference to the 'users' collection
+fsm_collection = db['fsm']
+users_collection = db['users']
 
 class DialogStates(StatesGroup):
     waiting_for_search_query = State()
@@ -72,10 +72,6 @@ async def handle_message(message: types.Message, state: FSMContext):
         return
 
     # Default response if none of the above conditions are met
-    #await message.answer("Please use the buttons to interact or start a new query with /start.")
-
-
-
 
 async def fetch_original_user_id(reply_message_id):
     record = await db.message_links.find_one({"reply_message_id": reply_message_id})
@@ -130,7 +126,6 @@ async def handle_help(message: types.Message):
     help_text = "Вот как вы можете взаимодействовать со мной:\n"
     help_text += "- Используйте кнопку поиска, чтобы начать новый поиск.\n"
     help_text += "- Выберите 'Связаться с оператором', чтобы отправить сообщение в нашу службу поддержки.\n"
-    help_text += "- Отвечайте на любые подсказки, которые я предоставляю для детального взаимодействия."
     await message.answer(help_text)
 
 def register_handlers(dp: Dispatcher):
